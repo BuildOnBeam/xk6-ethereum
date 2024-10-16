@@ -2,6 +2,21 @@
 
 A k6 extension to interact with EVM based blockchains.
 
+## Beam Subnet Load Testing
+
+for ERC20 tokens functions call:
+
+```bash
+# mint erc20s
+xk6 run --out influxdb=http://localhost:8086/blockspeed -e BEAM_API_KEY=66d1e153-1d08-37e8-b805-c2391494d054 scripts/ERC20/ERC20mint.js
+
+# transfer erc20s
+xk6 run --out influxdb=http://localhost:8086/blockspeed -e BEAM_API_KEY=66d1e153-1d08-37e8-b805-c2391494d054 scripts/ERC20/ERC20transfer.js
+
+# burn erc20s
+xk6 run --out influxdb=http://localhost:8086/blockspeed -e BEAM_API_KEY=66d1e153-1d08-37e8-b805-c2391494d054 scripts/ERC20/ERC20burn.js
+```
+
 ## Getting started
 
 1. [Build](#build) or Install [BlockSpeed](https://github.com/distribworks/blockspeed)
@@ -33,14 +48,16 @@ To build a `k6` binary with this plugin, first ensure you have the prerequisites
 Then:
 
 1. Install `xk6`:
-  ```shell
-  go install go.k6.io/xk6/cmd/xk6@latest
-  ```
+
+```shell
+go install go.k6.io/xk6/cmd/xk6@latest
+```
 
 2. Build the binary:
-  ```shell
-  xk6 build --with github.com/distribworks/xk6-ethereum
-  ```
+
+```shell
+xk6 build --with github.com/distribworks/xk6-ethereum
+```
 
 ## Javascript API
 
@@ -49,7 +66,7 @@ Then:
 The `k6/x/ethereum` module contains the Ethereum extension to interact with Ethereum RPC API. To import the module add
 
 ```javascript
-import eth from 'k6/x/ethereum';
+import eth from "k6/x/ethereum";
 ```
 
 ### Class `eth.Client({[url, mnemonic, privateKey]})`
@@ -57,28 +74,29 @@ import eth from 'k6/x/ethereum';
 The class Client is an Ethereum RPC client that can perform several operations to an Ethereum node. The constructor takes the following arguments:
 
 #### Example:
+
 ```javascript
-import eth from 'k6/x/ethereum';
+import eth from "k6/x/ethereum";
 const client = new eth.Client({
-    url: 'http://localhost:8545',
+  url: "http://localhost:8545",
 });
 ```
 
-### Methods 
+### Methods
 
-  - `gasPrice() number`
-  - `getBalance(address: string, blockNumber: number) number`
-  - `blockNumber() number`
-  - `getBlockByNumber(block: number, full: boolean) Block`
-  - `getNonce(address: string) number`
-  - `estimateGas(tx: Transaction) number`
-  - `sendTransaction(tx: Transaction) string`
-  - `sendRawTransaction(tx: Transaction) string`
-  - `getTransactionReceipt(tx_hash: string) Receipt`
-  - `waitForTransactionReceipt(tx_hash: string) => Promise<Receipt>`
-  - `accounts() string[]`
-  - `newContract(address: string, abi: string) Contract`
-  - `deployContract(abi: string, bytecode: string, args[]) Receipt`
+- `gasPrice() number`
+- `getBalance(address: string, blockNumber: number) number`
+- `blockNumber() number`
+- `getBlockByNumber(block: number, full: boolean) Block`
+- `getNonce(address: string) number`
+- `estimateGas(tx: Transaction) number`
+- `sendTransaction(tx: Transaction) string`
+- `sendRawTransaction(tx: Transaction) string`
+- `getTransactionReceipt(tx_hash: string) Receipt`
+- `waitForTransactionReceipt(tx_hash: string) => Promise<Receipt>`
+- `accounts() string[]`
+- `newContract(address: string, abi: string) Contract`
+- `deployContract(abi: string, bytecode: string, args[]) Receipt`
 
 ### Objects
 
@@ -138,31 +156,30 @@ txn() Receipt
 call() object
 ```
 
-
 ### Metrics
 
 It exposes the following metrics:
 
-  * ethereum_block: Blocks in the chain during the test
-  * ethereum_req_duration: Time taken to perform an API call to the client
-  * ethereum_tps: Computation of Transactions Per Second mined
-  * ethereum_time_to_mine: Time it took since a transaction was sent to the client and it has been included in a block
+- ethereum_block: Blocks in the chain during the test
+- ethereum_req_duration: Time taken to perform an API call to the client
+- ethereum_tps: Computation of Transactions Per Second mined
+- ethereum_time_to_mine: Time it took since a transaction was sent to the client and it has been included in a block
 
 ### Example
 
 ```javascript
-import eth from 'k6/x/ethereum';
+import eth from "k6/x/ethereum";
 
 const client = new eth.Client({
-    url: 'http://localhost:8545',
-    // You can also specify a private key here
-    // privateKey: 'private key of your account',
-    // or a mnemonic
-    // mnemonic: 'my mnemonic'
+  url: "http://localhost:8545",
+  // You can also specify a private key here
+  // privateKey: 'private key of your account',
+  // or a mnemonic
+  // mnemonic: 'my mnemonic'
 });
 
 // You can use an existing premined account
-const root_address = "0x85da99c8a7c2c95964c8efd687e95e632fc533d6"
+const root_address = "0x85da99c8a7c2c95964c8efd687e95e632fc533d6";
 
 export function setup() {
   return { nonce: client.getNonce(root_address) };
@@ -175,15 +192,15 @@ export default function (data) {
 
   const bal = client.getBalance(root_address, client.blockNumber());
   console.log(`bal => ${bal}`);
-  
+
   const tx = {
     to: "0xDEADBEEFDEADBEEFDEADBEEFDEADBEEFDEADBEEF",
     value: Number(0.0001 * 1e18),
     gas_price: gas,
     nonce: data.nonce,
   };
-  
-  const txh = client.sendRawTransaction(tx)
+
+  const txh = client.sendRawTransaction(tx);
   console.log("tx hash => " + txh);
   // Optional: wait for the transaction to be mined
   // const receipt = client.waitForTransactionReceipt(txh).then((receipt) => {
