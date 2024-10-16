@@ -3,10 +3,10 @@ import exec from 'k6/execution';
 
 // k6 'open' function to read files (works in V8 JavaScript engine)
 const accountsFile = open('../config/accounts.json');
-const {erc20Address} = open('./contracts/addresses.js');
+const accounts = JSON.parse(accountsFile);
+const erc20Address = "0x454F44a8Ca01A9f9Acf105a93d3eA8444714f316"
 const erc20abi = open("./contracts/erc20.abi");
 
-const accounts = JSON.parse(accountsFile);
 
 // RPC URL for Ethereum network
 const rpcUrl =
@@ -74,10 +74,8 @@ export default function () {
   }
 
   const client = clients[exec.vu.idInTest];
-  const contract = client.newContract(erc20Address, erc20abi);
+  
   const targetAddress = getRandomTargetAddress(); 
-
-
 
   // Initialize and store the nonce for the current VU if not already set
   if (!nonces[exec.vu.idInTest]) {
@@ -91,10 +89,17 @@ export default function () {
       `Minting tokens to ${targetAddress} with nonce ${nonce}`
     );
 
+    const con = client.newContract(erc20Address, erc20abi);
+    const txOpt = {
+        value: 0, 
+        gas_price: client.gasPrice(), 
+        nonce: nonce, 
+        gas_limit: 60578, // you can increase it if you want
+        gas_fee_cap: 1000000000000,
+      };
 
-    const res = retry(() => contract.txn("mint", targetAddress,1));
-    console.log(`Transaction hash: ${txHash}`);
-    console.log(`gas used => ${res.gas_used}`);
+    const tx = con.txn("mint",txOpt,targetAddress,1);
+    console.log(`txn hash => ${tx}`);
 
     // Increment the nonce for the next transaction
     nonce++;
