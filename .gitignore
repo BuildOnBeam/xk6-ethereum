@@ -3,6 +3,6 @@ vendor/
 .DS_Store
 examples/.DS_Store
 notes.md
-config/accounts.json
 .env
 summary.json
+config/accounts.json
