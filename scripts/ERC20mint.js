@@ -97,7 +97,7 @@ export default function () {
         gas_fee_cap: 1000000000000,
       };
 
-    const tx = con.txn("mint",txOpt,targetAddress,1);
+    const tx = con.txn("mint",txOpt,targetAddress,1e18);
     console.log(`txn hash => ${tx}`);
 
     // Increment the nonce for the next transaction
