@@ -74,7 +74,6 @@ export default function () {
   }
 
   const client = clients[exec.vu.idInTest];
-  
   const targetAddress = getRandomTargetAddress(); 
 
   // Initialize and store the nonce for the current VU if not already set
