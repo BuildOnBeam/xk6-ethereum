@@ -3,29 +3,15 @@ import exec from 'k6/execution';
 
 // k6 'open' function to read files (works in V8 JavaScript engine)
 const accountsFile = open('../config/accounts.json');
-const {erc20Address, mintAbi} = open('./contracts/ERC20.js');
+const {erc20Address} = open('./contracts/addresses.js');
+const erc20abi = open("./contracts/erc20.abi");
+
 const accounts = JSON.parse(accountsFile);
 
 // RPC URL for Ethereum network
 const rpcUrl =
   `https://eu.build.onbeam.com/rpc/testnet/${__ENV.BEAM_API_KEY}`;
 
-// ERC-20 contract address and ABI
-const erc20ABI = [
-  {
-    "constant": false,
-    "inputs": [
-      { "name": "account", "type": "address" },
-      { "name": "amount", "type": "uint256" }
-    ],
-    "name": "mint",
-    "outputs": [],
-    "type": "function"
-  },
-];
-
-// Define the amount of tokens to mint (adjust as needed)
-const mintAmount = Number(1000 * 1e18); // 1000 tokens, assuming 18 decimals
 
 export const options = {
   scenarios: {
@@ -88,6 +74,10 @@ export default function () {
   }
 
   const client = clients[exec.vu.idInTest];
+  const contract = client.newContract(erc20Address, erc20abi);
+  const targetAddress = getRandomTargetAddress(); 
+
+
 
   // Initialize and store the nonce for the current VU if not already set
   if (!nonces[exec.vu.idInTest]) {
@@ -95,31 +85,16 @@ export default function () {
   }
 
   let nonce = nonces[exec.vu.idInTest];
-  const targetAddress = getRandomTargetAddress(); // Get a random target address from the list
-
   try {
 
     console.log(
       `Minting tokens to ${targetAddress} with nonce ${nonce}`
     );
 
-    
 
-    // Encode the mint function call with parameters (address, amount)
-    const encodedData = client.encodeFunctionCall(mintAbi, [targetAddress, mintAmount]);
-
-    // Define the transaction for minting tokens
-    const tx = {
-      to: erc20Address,
-      data: encodedData, // ABI encoded data for the mint function
-      nonce: nonce,
-      gas_fee_cap: 1000000000000, // 1 Gwei
-      gas: 100000, // Adjust gas limit as needed
-    };
-
-    // Send the transaction
-    const txHash = retry(() => client.sendRawTransaction(tx));
+    const res = retry(() => contract.txn("mint", targetAddress,1));
     console.log(`Transaction hash: ${txHash}`);
+    console.log(`gas used => ${res.gas_used}`);
 
     // Increment the nonce for the next transaction
     nonce++;
