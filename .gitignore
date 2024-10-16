@@ -1,2 +1,5 @@
 k6
 vendor/
+.DS_Store
+examples/.DS_Store
+notes.md
