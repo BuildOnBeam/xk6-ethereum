@@ -7,7 +7,7 @@ const accounts = JSON.parse(accountsFile);
 
 // RPC URL for Ethereum network
 const rpcUrl =
-  'https://eu.build.onbeam.com/rpc/testnet/66d1e153-1d08-37e8-b805-c2391494d054';
+  `https://eu.build.onbeam.com/rpc/testnet/${__ENV.BEAM_API_KEY}`;
 
 // Define the transfer amount (0.01 ETH, or 0.01 * 1e18 wei)
 const transferAmount = Number(0.01 * 1e18);
@@ -93,7 +93,7 @@ export default function () {
       // gas_price: retry(() => client.gasPrice()), // Retry fetching gas price
       nonce: nonce, // Use manually managed nonce
       // gas: 10000000000000000000,
-      gas_fee_cap: 10000000000000000, // 1 Gwei
+      gas_fee_cap: 1000000000000, // 1 Gwei
     };
 
     // Send the transaction
