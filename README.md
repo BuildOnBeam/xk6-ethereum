@@ -10,7 +10,7 @@ A k6 extension to interact with EVM based blockchains.
 xk6 run --out influxdb=http://localhost:8086/blockspeed -e BEAM_API_KEY=<YOUR_API_KEY> scripts/nativeTransfer.js
 ```
 
-### ERC20 tokens functions call:
+### ERC20 tokens functions calls:
 
 ```bash
 # mint erc20s
@@ -21,6 +21,38 @@ xk6 run --out influxdb=http://localhost:8086/blockspeed -e BEAM_API_KEY=<YOUR_AP
 
 # burn erc20s
 xk6 run --out influxdb=http://localhost:8086/blockspeed -e BEAM_API_KEY=<YOUR_API_KEY> scripts/ERC20/ERC20burn.js
+```
+
+### ERC271 functions calls:
+
+```bash
+# mint erc721
+xk6 run --out influxdb=http://localhost:8086/blockspeed -e BEAM_API_KEY=<YOUR_API_KEY> scripts/ERC721/ERC721mint.js
+
+# mint erc721
+xk6 run --out influxdb=http://localhost:8086/blockspeed -e BEAM_API_KEY=<YOUR_API_KEY> scripts/ERC721/ERC721transferFrom.js
+```
+
+### ERC271 functions calls:
+
+```bash
+# mint erc1155
+xk6 run --out influxdb=http://localhost:8086/blockspeed -e BEAM_API_KEY=<YOUR_API_KEY> scripts/ERC1155/ERC1155mint.js
+
+# mint batch erc1155
+xk6 run --out influxdb=http://localhost:8086/blockspeed -e BEAM_API_KEY=<YOUR_API_KEY> scripts/ERC1155/ERC1155mintBatch.js
+
+# transfer erc1155
+xk6 run --out influxdb=http://localhost:8086/blockspeed -e BEAM_API_KEY=<YOUR_API_KEY> scripts/ERC1155/ERC1155safeTransferFrom.js
+
+# transfer batch erc1155
+xk6 run --out influxdb=http://localhost:8086/blockspeed -e BEAM_API_KEY=<YOUR_API_KEY> scripts/ERC1155/ERC1155safeBatchTransferFrom.js
+# burn batch erc1155
+xk6 run --out influxdb=http://localhost:8086/blockspeed -e BEAM_API_KEY=<YOUR_API_KEY> scripts/ERC1155/ERC1155burnBatch.js
+
+# burn erc1155
+xk6 run --out influxdb=http://localhost:8086/blockspeed -e BEAM_API_KEY=<YOUR_API_KEY> scripts/ERC1155/ERC1155burn.js
+
 ```
 
 ## Getting started
