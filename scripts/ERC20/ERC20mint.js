@@ -2,10 +2,10 @@ import eth from 'k6/x/ethereum';
 import exec from 'k6/execution';
 
 // k6 'open' function to read files (works in V8 JavaScript engine)
-const accountsFile = open('../config/accounts.json');
+const accountsFile = open('../../config/accounts.json');
 const accounts = JSON.parse(accountsFile);
 const erc20Address = "0x454F44a8Ca01A9f9Acf105a93d3eA8444714f316"
-const erc20abi = open("./contracts/erc20.abi");
+const erc20abi = open("../contracts/erc20.abi");
 
 
 // RPC URL for Ethereum network
