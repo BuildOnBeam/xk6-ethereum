@@ -4,17 +4,23 @@ A k6 extension to interact with EVM based blockchains.
 
 ## Beam Subnet Load Testing
 
-for ERC20 tokens functions call:
+### Normal transfers:
+
+```bash
+xk6 run --out influxdb=http://localhost:8086/blockspeed -e BEAM_API_KEY=<YOUR_API_KEY> scripts/nativeTransfer.js
+```
+
+### ERC20 tokens functions call:
 
 ```bash
 # mint erc20s
-xk6 run --out influxdb=http://localhost:8086/blockspeed -e BEAM_API_KEY=66d1e153-1d08-37e8-b805-c2391494d054 scripts/ERC20/ERC20mint.js
+xk6 run --out influxdb=http://localhost:8086/blockspeed -e BEAM_API_KEY=<YOUR_API_KEY> scripts/ERC20/ERC20mint.js
 
 # transfer erc20s
-xk6 run --out influxdb=http://localhost:8086/blockspeed -e BEAM_API_KEY=66d1e153-1d08-37e8-b805-c2391494d054 scripts/ERC20/ERC20transfer.js
+xk6 run --out influxdb=http://localhost:8086/blockspeed -e BEAM_API_KEY=<YOUR_API_KEY> scripts/ERC20/ERC20transfer.js
 
 # burn erc20s
-xk6 run --out influxdb=http://localhost:8086/blockspeed -e BEAM_API_KEY=66d1e153-1d08-37e8-b805-c2391494d054 scripts/ERC20/ERC20burn.js
+xk6 run --out influxdb=http://localhost:8086/blockspeed -e BEAM_API_KEY=<YOUR_API_KEY> scripts/ERC20/ERC20burn.js
 ```
 
 ## Getting started
