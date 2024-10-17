@@ -33,7 +33,7 @@ xk6 run --out influxdb=http://localhost:8086/blockspeed -e BEAM_API_KEY=<YOUR_AP
 xk6 run --out influxdb=http://localhost:8086/blockspeed -e BEAM_API_KEY=<YOUR_API_KEY> scripts/ERC721/ERC721transferFrom.js
 ```
 
-### ERC271 functions calls:
+### ERC1155 functions calls:
 
 ```bash
 # mint erc1155
