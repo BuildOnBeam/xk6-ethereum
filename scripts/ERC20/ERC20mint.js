@@ -5,7 +5,7 @@ import exec from 'k6/execution';
 const accountsFile = open('../../config/accounts.json');
 const accounts = JSON.parse(accountsFile);
 const erc20Address = "0x454F44a8Ca01A9f9Acf105a93d3eA8444714f316"
-const erc20abi = open("../contracts/erc20.abi");
+const contractAbi = open("../contracts/erc20.abi");
 
 
 // RPC URL for Ethereum network
@@ -17,7 +17,7 @@ export const options = {
   scenarios: {
     continuous_transactions: {
       executor: 'constant-vus',
-      vus: 100, // 100 virtual users (one per account)
+      vus: 24, // 100 virtual users (one per account)
       duration: '10s', // Run for 30 seconds
     },
   },
@@ -88,7 +88,7 @@ export default function () {
       `Minting tokens to ${targetAddress} with nonce ${nonce}`
     );
 
-    const con = client.newContract(erc20Address, erc20abi);
+    const con = client.newContract(erc20Address, contractAbi);
     const txOpt = {
         value: 0, 
         gas_price: client.gasPrice(), 

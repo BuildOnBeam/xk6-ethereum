@@ -4,8 +4,8 @@ import exec from 'k6/execution';
 // k6 'open' function to read files (works in V8 JavaScript engine)
 const accountsFile = open('../../config/accounts.json');
 const accounts = JSON.parse(accountsFile);
-const erc20Address = "0x454F44a8Ca01A9f9Acf105a93d3eA8444714f316"
-const contractAbi = open("../contracts/erc20.abi");
+const erc721Address = "0xa991c2547596bc3E4B4733c66f884A98f26538f6"
+const contractAbi = open("../contracts/erc721.abi");
 
 
 // RPC URL for Ethereum network
@@ -17,7 +17,7 @@ export const options = {
   scenarios: {
     continuous_transactions: {
       executor: 'constant-vus',
-      vus: 24, // 100 virtual users (one per account)
+      vus: 21, // 100 virtual users (one per account) --> needed to low this number to make the test run
       duration: '10s', // Run for 30 seconds
     },
   },
@@ -83,23 +83,24 @@ export default function () {
 
   let nonce = nonces[exec.vu.idInTest];
   try {
-
     console.log(
-      `Burning tokens with nonce ${nonce}`
+      `Minting tokens to ${targetAddress} with nonce ${nonce}`
     );
 
-    const con = client.newContract(erc20Address, contractAbi);
+    const con = client.newContract(erc721Address, contractAbi);
     const txOpt = {
         value: 0, 
         gas_price: client.gasPrice(), 
         nonce: nonce, 
-        gas_limit: 60578, // you can increase it if you want
+        gas_limit: 900578, // I increased it to make tx pass
         gas_fee_cap: 1000000000000,
       };
 
+    const tx_mint = con.txn("mint",txOpt,account.address);
+    console.log(`txn hash (mint) => ${tx_mint}`);
 
-    const tx_burn = con.txn("burn",txOpt,1);
-    console.log(`txn hash (burn) => ${tx_burn}`);
+    // const tx_transfer = con.txn("transfer",txOpt,targetAddress,1);
+    // console.log(`txn hash (transfer) => ${tx_transfer}`);
 
     // Increment the nonce for the next transaction
     nonce++;

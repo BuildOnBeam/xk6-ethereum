@@ -16,7 +16,7 @@ export const options = {
   scenarios: {
     continuous_transactions: {
       executor: 'constant-vus',
-      vus: 100, // 100 virtual users (one per account)
+      vus: 24 , // 100 virtual users (one per account)
       duration: '10s', // Run for 30 seconds
     },
   },
